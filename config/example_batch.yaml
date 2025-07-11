@@ -1,0 +1,41 @@
+# Example batch request configuration
+# Usage: python main.py --batch config/example_batch.yaml
+
+requests:
+  - method: "GET"
+    url: "https://httpbin.org/uuid"
+    priority: "HIGH"
+    headers:
+      X-Request-Type: "uuid-fetch"
+    
+  - method: "POST"
+    url: "https://httpbin.org/post"
+    priority: "NORMAL"
+    headers:
+      Content-Type: "application/json"
+    body:
+      message: "Hello from batch request"
+      timestamp: "2024-01-01T12:00:00Z"
+    
+  - method: "GET"
+    url: "https://httpbin.org/json"
+    priority: "LOW"
+    headers:
+      Accept: "application/json"
+    
+  - method: "GET"
+    url: "https://httpbin.org/headers"
+    priority: "NORMAL"
+    headers:
+      X-Custom-Header: "batch-test"
+    
+  - method: "PUT"
+    url: "https://httpbin.org/put"
+    priority: "HIGH"
+    headers:
+      Content-Type: "application/json"
+    body:
+      action: "update"
+      data:
+        id: 123
+        name: "Updated Resource"

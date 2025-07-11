@@ -1,0 +1,176 @@
+# Network Automation Request Sender Configuration
+
+# Core system configuration
+system:
+  max_concurrent_requests: 50
+  request_timeout: 30
+  retry_count: 3
+  retry_delay: 1.0
+  rate_limit_per_second: 100
+  enable_monitoring: true
+  enable_caching: true
+  cache_ttl: 3600
+  log_level: "INFO"
+
+# Request sender configuration
+request_sender:
+  connection_pool_size: 100
+  connection_pool_per_host: 30
+  dns_cache_ttl: 300
+  force_close_connections: false
+  verify_ssl: true
+  follow_redirects: true
+  max_redirects: 10
+
+# Queue configuration
+queue:
+  max_size: 1000
+  enable_persistence: true
+  persist_path: "./logs/queue.pkl"
+  dlq_max_size: 100
+  item_expiry_seconds: 3600
+
+# Monitoring configuration
+monitoring:
+  collect_interval: 5
+  metrics_export_interval: 60
+  health_check_interval: 60
+  alert_max_count: 1000
+  
+  # Alert thresholds
+  thresholds:
+    system_cpu_percent: 80
+    system_memory_percent: 85
+    system_disk_percent: 90
+    request_failure_rate: 0.1
+    request_duration_seconds: 30
+
+# Authentication templates
+auth_templates:
+  api_key_header:
+    type: "api_key"
+    placement: "header"
+    key_name: "X-API-Key"
+  
+  bearer_token:
+    type: "bearer"
+    placement: "header"
+  
+  basic_auth:
+    type: "basic"
+    placement: "header"
+  
+  oauth2_client_credentials:
+    type: "oauth2"
+    flow: "client_credentials"
+
+# Request templates
+request_templates:
+  rest_api:
+    method: "GET"
+    headers:
+      Content-Type: "application/json"
+      User-Agent: "NetworkAutomation/1.0"
+    timeout: 30
+    body_format: "json"
+  
+  graphql:
+    method: "POST"
+    headers:
+      Content-Type: "application/json"
+      User-Agent: "NetworkAutomation/1.0"
+    timeout: 30
+    body_format: "json"
+  
+  soap:
+    method: "POST"
+    headers:
+      Content-Type: "application/soap+xml"
+      SOAPAction: ""
+    timeout: 30
+    body_format: "xml"
+  
+  webhook:
+    method: "POST"
+    headers:
+      Content-Type: "application/json"
+      User-Agent: "NetworkAutomation/1.0"
+    timeout: 10
+    body_format: "json"
+
+# Transformation configurations
+transformations:
+  encryption:
+    type: "encrypt_body"
+    algorithm: "AES-256-GCM"
+  
+  signing:
+    type: "sign_request"
+    algorithm: "HMAC-SHA256"
+    include_body: true
+  
+  timestamping:
+    type: "add_timestamp"
+    format: "%Y-%m-%dT%H:%M:%SZ"
+    header_name: "X-Timestamp"
+  
+  request_id:
+    type: "add_request_id"
+    header_name: "X-Request-ID"
+
+# Circuit breaker configuration
+circuit_breaker:
+  failure_threshold: 5
+  timeout: 60
+  half_open_max_calls: 3
+
+# Webhook configuration
+webhooks:
+  success_url: null
+  failure_url: null
+  timeout: 10
+  retry_count: 2
+
+# SSL/TLS configuration
+ssl:
+  verify: true
+  ca_bundle: null
+  cert_file: null
+  key_file: null
+  protocols:
+    - "TLSv1.2"
+    - "TLSv1.3"
+  ciphers: "ECDHE+AESGCM:ECDHE+CHACHA20:DHE+AESGCM:DHE+CHACHA20:!aNULL:!MD5:!DSS"
+
+# Proxy configuration
+proxy:
+  http_proxy: null
+  https_proxy: null
+  no_proxy: 
+    - "localhost"
+    - "127.0.0.1"
+    - "::1"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/automation.log"
+  max_size: "10MB"
+  backup_count: 5
+  
+  # Log different components separately
+  components:
+    core: "INFO"
+    request_builder: "INFO"
+    request_sender: "INFO"
+    queue_manager: "INFO"
+    monitor: "INFO"
+
+# Development/Testing settings
+development:
+  debug: false
+  mock_responses: false
+  slow_request_threshold: 5.0
+  enable_request_recording: false
+  request_recording_path: "./logs/requests.log"
